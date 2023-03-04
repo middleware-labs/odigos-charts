@@ -6,26 +6,24 @@ on:
       - master
       - middleware
 
-jobs:
-  release:
+jobs: 
+  update-configyaml:
+
+    name: Updating otel-config.yaml files in install.middleware.io
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      # Checking out repository code
+      - name: Checkout Repo
+        uses: actions/checkout@v3
 
-      - name: Configure Git
+      - name: Updating chart code in Helm chart repository
         run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-      - name: Install Helm
-        uses: azure/setup-helm@v1
-        with:
-          version: v3.4.0
-
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.2.0
-        env:
-          CR_TOKEN: "${{ secrets.GHCR_TOKEN }}"
+          git clone https://.:${{ secrets.GHCR_TOKEN }}@github.com/middleware-labs/helm-charts.git
+          cp -r charts/odigos helm-charts/charts/odigos
+          cd helm-charts
+          git config --global user.email "keval@middleware.io"
+          git config --global user.name "bhogayatakb"
+          git add .
+          git commit -m "odigos chart updated"
+          git push origin master    
