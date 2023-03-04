@@ -17,7 +17,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
         with:
-          ref: $GITHUB_REF
+          ref: middleware
 
       - name: Updating chart code in Helm chart repository
         run: |
